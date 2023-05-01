@@ -10,24 +10,33 @@ const classList = [
 ];
 
 export default class Character {
-  constructor(name, range, stoned, attack) {
+  constructor(name, type, range, stoned, attack) {
     this.name = name;
     this.health = 100;
     this.range = range;
+    this.type = type;
     this.setAttack(attack);
     this.setStoned(stoned);
   }
 
   setAttack(attackProcessed) {
-    attackProcessed -= attackProcessed * ((this.range - 1) / 10);
-    this.attack = Math.round(attackProcessed);
+    if (this.type === 'Daemon' || this.type === 'Magician') {
+      attackProcessed -= attackProcessed * ((this.range - 1) / 10);
+      this.attack = Math.round(attackProcessed);
+    } else {
+      this.attack = attackProcessed;
+    }
   }
 
   setStoned(stoned) {
-    if (stoned) {
-      this.attack -= Math.log2(this.range) * 5;
-      this.attack = Math.round(this.attack);
-      this.stoned = true;
+    if (this.type === 'Daemon' || this.type === 'Magician') {
+      if (stoned) {
+        this.attack -= Math.log2(this.range) * 5;
+        this.attack = Math.round(this.attack);
+        this.stoned = true;
+      } else {
+        this.stoned = false;
+      }
     } else {
       this.stoned = false;
     }
