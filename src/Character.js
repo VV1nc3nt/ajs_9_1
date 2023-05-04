@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-param-reassign */
 const classList = [
@@ -15,38 +16,29 @@ export default class Character {
     this.health = 100;
     this.range = range;
     this.type = type;
-    this.setAttack(attack);
-    this.setStoned(stoned);
+    this.stoned = stoned;
+    this.attack = attack;
   }
 
-  setAttack(attackProcessed) {
-    if (this.type === 'Daemon' || this.type === 'Magician') {
-      attackProcessed -= attackProcessed * ((this.range - 1) / 10);
-      this.attack = Math.round(attackProcessed);
-    } else {
-      this.attack = attackProcessed;
+  set stoned(stoned) {
+    this._stoned = stoned;
+  }
+
+  get stoned() {
+    return this._stoned;
+  }
+
+  set attack(attack) {
+    this._attack = attack;
+  }
+
+  get attack() {
+    let attack = this._attack;
+    attack -= attack * ((this.range - 1) / 10);
+    if (this.stoned) {
+      attack -= Math.log2(this.range) * 5;
+      attack = Math.round(attack);
     }
-  }
-
-  setStoned(stoned) {
-    if (this.type === 'Daemon' || this.type === 'Magician') {
-      if (stoned) {
-        this.attack -= Math.log2(this.range) * 5;
-        this.attack = Math.round(this.attack);
-        this.stoned = true;
-      } else {
-        this.stoned = false;
-      }
-    } else {
-      this.stoned = false;
-    }
-  }
-
-  getAttack() {
-    return this.attack;
-  }
-
-  getStoned() {
-    return this.stoned;
+    return attack;
   }
 }
